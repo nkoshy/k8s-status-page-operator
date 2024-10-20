@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: statuspage-operator-config
+  namespace: default
+data:
+  config.yaml: |
+    monitored_namespaces:
+      - default
+      - production
+      - staging

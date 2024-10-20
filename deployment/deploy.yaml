@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statuspage-operator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: statuspage-operator
+  template:
+    metadata:
+      labels:
+        app: statuspage-operator
+    spec:
+      serviceAccountName: statuspage-operator
+      containers:
+      - name: statuspage-operator
+        image: your-registry/statuspage-operator:latest
+        env:
+        - name: STATUS_PAGE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: statuspage-secrets
+              key: api-key
+        - name: STATUS_PAGE_PAGE_ID
+          valueFrom:
+            secretKeyRef:
+              name: statuspage-secrets
+              key: page-id
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: statuspage-operator-configs
